@@ -43,6 +43,16 @@ class Inventory:
         attribute_by_type[type(item)].remove(item)
 
         self.total_weight -= item.weight * item.quantity
+    
+    @property
+    def total_weight(self):
+        return self._total_weight
+
+    @total_weight.setter
+    def total_weight(self, value):
+        if value < 0:
+            raise ValueError("Total weight cannot be negative.")
+        self._total_weight = value
 
 
 class Character:
