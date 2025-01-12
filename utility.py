@@ -1,3 +1,4 @@
+import sys
 import pickle
 
 import requests
@@ -41,7 +42,10 @@ class Utility:
         }
 
         response = requests.request("GET", url, headers=headers)
-        return response.json()
+        if response.status_code == 200:
+            return response.json()
+        else:
+            sys.exit("Did not receive a response from the API")
     
     @staticmethod
     def from_file(file_name: str) -> list:
