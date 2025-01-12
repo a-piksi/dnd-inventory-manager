@@ -13,19 +13,22 @@ class Item:
         self.quantity = quantity
     
     def __str__(self):
-        text = [f"Name: {self.name}", f"Category: {self.item_type}"]
-        if self.description:
-            text.append(f"Description: {"\n".join(self.description)}")
-        if self.rarity:
-            text.append(f"Rarity: {self.rarity}")
-        text.append(f"Weight: {self.weight if self.weight else 0} lb.")
-        text.append(f"Quantity: {self.quantity}\n")
-        wrapped_text = [textwrap.fill(line, 90, replace_whitespace=False) for line in text]
-        return "\n" + tabulate([["\n".join(wrapped_text)]], tablefmt="grid")
+        text = self._general_info_to_text()
+        return "\n" + tabulate(text, tablefmt="grid")
     
     def get_full_weight(self):
         return self.weight * self.quantity
-
+    
+    def _general_info_to_text(self) -> list:
+        text = [["Name", self.name], ["Category", self.item_type]]
+        if self.description:
+            wrapped_description = [textwrap.fill(line, 70, replace_whitespace=False) for line in self.description]
+            text.append(["Description", "\n".join(wrapped_description)])
+        if self.rarity:
+            text.append(["Rarity", self.rarity])
+        text.append(["Weight", f"{self.weight if self.weight else 0} lb."])
+        text.append(["Quantity", str(self.quantity)])
+        return text
     
     @classmethod
     def create_from_data(cls, data: dict):
@@ -110,30 +113,23 @@ class Weapon(Item):
         self.special = special
     
     def __str__(self):
-        text = [f"Name: {self.name}", f"Category: {self.item_type}"]
-        text.append(f"Weapon category: {self.weapon_type}")
-        if self.description:
-            text.append(f"Description: {"\n".join(self.description)}")
-        if self.rarity:
-            text.append(f"Rarity: {self.rarity}")
+        text = self._general_info_to_text()
+        text.append(["Weapon Category", self.weapon_type])
         if self.damage:
-            text.append(f"Damage: {self.damage}")
+            text.append(["Damage", self.damage])
             if self.two_handed_damage:
-                text.append(f"Two-handed damage: {self.two_handed_damage}")
-            text.append(f"Damage type: {self.damage_type}")
+                text.append(["Two-Handed Damage", self.two_handed_damage])
+            text.append(["Damage Type", self.damage_type])
         if len(self.range) == 2:
-            text.append(f"Range (normal/long): {self.range["normal"]}/{self.range["long"]}")
+            text.append(["Range (Normal/Long)", f"{self.range['normal']}/{self.range['long']}"])
         else:
-            text.append(f"Range (normal): {self.range["normal"]}")
+            text.append(["Range (Normal)", f"{self.range['normal']}"])
             if self.throw_range:
-                text.append(f"Throw range (normal/long): {self.throw_range["normal"]}/{self.throw_range["long"]}")
-        text.append(f"Properties: {", ".join(self.properties)}")
+                text.append(["Throw Range (Normal/Long)", f"{self.throw_range['normal']}/{self.throw_range['long']}"])
+        text.append(["Properties", ", ".join(self.properties)])
         if self.special:
-            text.append(f"Special: {self.special}")
-        text.append(f"Weight: {self.weight if self.weight else 0} lb.")
-        text.append(f"Quantity: {self.quantity}")
-        wrapped_text = [textwrap.fill(line, 90, replace_whitespace=False) for line in text]
-        return "\n" + tabulate([["\n".join(wrapped_text)]], tablefmt="grid")
+            text.append(["Special", self.special])
+        return "\n" + tabulate(text, tablefmt="grid")
     
     @classmethod
     def create_from_data(cls, data: dict):
@@ -165,22 +161,15 @@ class Armor(Item):
         self.stealth_disadvantage = stealth_disadvantage
     
     def __str__(self):
-        text = [f"Name: {self.name}", f"Category: {self.item_type}"]
-        text.append(f"Armor category: {self.armor_type}")
-        if self.description:
-            text.append(f"Description: {"\n".join(self.description)}")
-        if self.rarity:
-            text.append(f"Rarity: {self.rarity}")
-        text.append(f"Armor class: {self.armor_class["base"]}")
-        text.append(f"Dexterity bonus: {"Yes" if self.armor_class["dex_bonus"] else "No"}")
+        text = self._general_info_to_text()
+        text.append(["Armor Category", self.armor_type])
+        text.append(["Armor Class", self.armor_class["base"]])
+        text.append(["Dexterity Bonus", "Yes" if self.armor_class["dex_bonus"] else "No"])
         if self.armor_class.get("max_bonus"):
-            text.append(f"Max bonus: +{self.armor_class["max_bonus"]}")
-        text.append(f"Strength minimum: {self.str_minimum}")
-        text.append(f"Stealth disadvantage: {"Yes" if self.stealth_disadvantage else "No"}")
-        text.append(f"Weight: {self.weight if self.weight else 0} lb.")
-        text.append(f"Quantity: {self.quantity}")
-        wrapped_text = [textwrap.fill(line, 90, replace_whitespace=False) for line in text]
-        return "\n" + tabulate([["\n".join(wrapped_text)]], tablefmt="grid")
+            text.append(["Max Bonus", f"+{self.armor_class['max_bonus']}"])
+        text.append(["Strength Minimum", self.str_minimum])
+        text.append(["Stealth Disadvantage", "Yes" if self.stealth_disadvantage else "No"])
+        return "\n" + tabulate(text, tablefmt="grid")
 
     
     @classmethod

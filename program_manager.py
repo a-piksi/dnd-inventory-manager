@@ -173,7 +173,7 @@ class ProgramManager:
          
         old_quantity = chosen_item.quantity
         chosen_item.quantity = quantity
-        character.inventory.change_weight(old_quantity, quantity)
+        character.inventory.change_weight(chosen_item.weight, old_quantity, quantity)
         print("\nQuantity has been changed successfully!")
     
     @classmethod

@@ -1,3 +1,5 @@
+from tabulate import tabulate
+
 from items import Item, Weapon, Armor
 
 class Inventory:
@@ -8,7 +10,7 @@ class Inventory:
         self.total_weight = 0
     
     def __str__(self):
-        text = f"\nTotal weight: {self.total_weight} lb.\n"
+        text = ""
         counter = iter(range(1, (1 + len(self.items) + len(self.weapons) + len(self.armor))))
 
         if self.items:
@@ -32,9 +34,9 @@ class Inventory:
     def get_full_list(self) -> list:
         return self.items + self.weapons + self.armor
     
-    def change_weight(self, old_quantity, new_quantity):
+    def change_weight(self, weight: int | float, old_quantity: int, new_quantity: int):
         difference = new_quantity - old_quantity
-        self.total_weight += difference
+        self.total_weight += difference * weight
     
     def remove(self, item: Item):
         attribute_by_type = {Item: self.items, Weapon: self.weapons, Armor: self.armor}
@@ -53,9 +55,13 @@ class Character:
         self.inventory = inventory
     
     def __str__(self):
-        return (f"\nName: {self.name} | Race: {self.race} | Class: {self.character_class} | "
-                + f"Strength score: {self.strength} | Carry capacity: {self.carry_capacity} lb.\n"
-                + f"\nInventory:{self.inventory}")
+        text = (f"\nName: {self.name} | Race: {self.race} | Class: {self.character_class} | "
+                + f"Strength score: {self.strength}\n\nCurrent load: {self.inventory.total_weight}"
+                + f"/{self.carry_capacity} lb.")
+        if self.inventory.total_weight > self.carry_capacity:
+            text += " *ENCUMBERED*"
+        text += f"\n{self.inventory}"
+        return "\n" + tabulate([[text]], tablefmt="grid") + "\n"
     
     @property
     def name(self):

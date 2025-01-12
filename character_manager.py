@@ -1,6 +1,5 @@
 import os
 
-from item_library import ItemLibrary
 from utility import Utility
 from character import Character, Inventory
 
