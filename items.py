@@ -128,7 +128,8 @@ class Weapon(Item):
                 text.append(["Throw Range (Normal/Long)", f"{self.throw_range['normal']}/{self.throw_range['long']}"])
         text.append(["Properties", ", ".join(self.properties)])
         if self.special:
-            text.append(["Special", self.special])
+            wrapped_special = [textwrap.fill(line, 70, replace_whitespace=False) for line in self.special]
+            text.append(["Special", "\n".join(wrapped_special)])
         return "\n" + tabulate(text, tablefmt="grid")
     
     @classmethod
