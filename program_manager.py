@@ -39,7 +39,7 @@ class ProgramManager:
         Utility.to_file("characters.pkl", cls.character_manager.characters)
     
     @classmethod
-    def _search(cls, exit_message: str):
+    def _search(cls, exit_message: str, item_type=None):
         while True:
             print(f"\nEnter a keyword or part of the item's name to search for matching items.\nPress CTRL+C to {exit_message}.")
             try:
@@ -48,7 +48,7 @@ class ProgramManager:
                 print()
                 return None
 
-            found_items = cls.item_library.search_items(keyword)
+            found_items = cls.item_library.search_items(keyword, item_type)
             if not found_items:
                 print("\nNo matches found.")
                 continue
@@ -104,7 +104,7 @@ class ProgramManager:
             # need to be merged with a regular item of the same type
             if selected_item.rarity and selected_item.item_type in ["Weapon", "Armor"]:
                 print(f"\nSelect an item of category \"{selected_item.item_type}\", which is mentioned in the description.")
-                selected_sub_item = cls._search("cancel adding this item")
+                selected_sub_item = cls._search("cancel adding this item", selected_item.item_type)
                 if selected_sub_item is None: continue
 
                 new_item = cls.item_library.create_magic_item(selected_item, selected_sub_item, quantity)

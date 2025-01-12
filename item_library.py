@@ -41,8 +41,14 @@ class ItemLibrary:
         Utility.to_file(OFFICIAL_FILE, item_list)
         return item_list
     
-    def search_items(self, keyword: str):
-        items_found = [item for item in self.official if keyword.lower() in item.name.lower()]
+    def search_items(self, keyword: str, item_type: str | None) -> list:
+        # If item_type is not None - search for a non-magical item of item_type
+        # (Item is magical if have attribute rarity)
+        if item_type is not None:
+            item_list = [item for item in self.official if item.item_type == item_type and item.rarity is None]
+        else:
+            item_list = self.official
+        items_found = [item for item in item_list if keyword.lower() in item.name.lower()]
         return items_found
     
     def create_magic_item(self, magic_item: Item, non_magic_item: Weapon | Armor, quantity: int):
